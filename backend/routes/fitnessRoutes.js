@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const registerController = require('../controllers/fitnessController'); 
+const { getRegister, addRegister } = require('../controllers/fitnessController');
 
+router.route('/register')
+  .get(getRegister)
+  .post(addRegister);
 
-router.get('/register', registerController.getRegister); 
-router.post('/register', registerController.addRegister); 
-
-module.exports = router; 
-    
+module.exports = router;
