@@ -1,107 +1,105 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-function App() {
-  const [name, setName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [email, setEmail] = useState('');
-  const [bestTime, setBestTime] = useState('');
-  const [btc, setBtc] = useState('');
+const InputField = ({ label, type, value, onChange, required }) => (
+  <div>
+    <label>
+      {label}:
+      <input type={type} value={value} onChange={onChange} required={required} />
+    </label>
+  </div>
+);
+
+const RadioGroup = ({ label, options, selectedValue, onChange }) => (
+  <div>
+    <p>{label}</p>
+    {options.map((option) => (
+      <label key={option}>
+        <input
+          type="radio"
+          value={option}
+          checked={selectedValue === option}
+          onChange={onChange}
+          required
+        />
+        {option}
+      </label>
+    ))}
+  </div>
+);
+
+const App = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    phoneNumber: '',
+    email: '',
+    bestTime: '',
+    btc: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const studentData = {
-      name,
-      phone_number: phoneNumber,
-      email,
-      btc,
-      best_time: bestTime,
-    };
-
     try {
-      const response = await axios.post('http://localhost:3001/api/students', studentData);
+      const response = await axios.post('http://localhost:3001/api/register', formData);
       console.log(response.data);
       alert('Registration Successful!');
       window.location.reload();
     } catch (error) {
-      console.error('There was an error submitting the form:', error);
-      alert('There was an error adding the student. Please try again.');
+      console.error('An error occurred while submitting the form:', error);
+      alert('An error occurred during the registration process. Please try again.');
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <div>
-        <label>
-          Name:
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          Phone Number:
-          <input
-            type="tel"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            required
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          Email:
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </label>
-      </div>
-      <div>
-        <p>Best Time to Call:</p>
-        <label>
-          <input
-            type="radio"
-            value="Morning"
-            checked={bestTime === 'Morning'}
-            onChange={(e) => setBestTime(e.target.value)}
-            required
-          />
-          Morning
-        </label>
-        <label>
-          <input
-            type="radio"
-            value="Afternoon"
-            checked={bestTime === 'Afternoon'}
-            onChange={(e) => setBestTime(e.target.value)}
-            required
-          />
-          Afternoon
-        </label>
-      </div>
-      <div>
-        <label>
-          BTC:
-          <input
-            type="text"
-            value={btc}
-            onChange={(e) => setBtc(e.target.value)}
-            required
-          />
-        </label>
-      </div>
+      <InputField
+        label="Name"
+        type="text"
+        value={formData.name}
+        onChange={handleChange}
+        required
+        name="name"
+      />
+      <InputField
+        label="Phone Number"
+        type="tel"
+        value={formData.phoneNumber}
+        onChange={handleChange}
+        required
+        name="phoneNumber"
+      />
+      <InputField
+        label="Email"
+        type="email"
+        value={formData.email}
+        onChange={handleChange}
+        required
+        name="email"
+      />
+      <RadioGroup
+        label="Best Time to Call"
+        options={['Morning', 'Afternoon']}
+        selectedValue={formData.bestTime}
+        onChange={handleChange}
+        name="bestTime"
+      />
+      <InputField
+        label="BTC"
+        type="text"
+        value={formData.btc}
+        onChange={handleChange}
+        required
+        name="btc"
+      />
       <button type="submit">Submit</button>
     </form>
   );
-}
+};
 
 export default App;
