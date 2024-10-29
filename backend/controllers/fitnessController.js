@@ -2,7 +2,7 @@
 const db = require('../db'); 
 
 
-exports.getStudents = (req, res) => {
+exports.getRegister = (req, res) => {
   const sql = 'SELECT * FROM tbl_fitness'; 
   db.query(sql, (err, result) => {
     if (err) {
